@@ -1,0 +1,106 @@
+@import "tailwindcss";
+@import "leaflet/dist/leaflet.css";
+
+@layer base {
+  :root {
+    --color-navy-deep: #031B35;
+    --color-navy-primary: #062B52;
+    --color-engineering-blue: #0759A8;
+    --color-brand-orange: #FF7900;
+    --color-light-bg: #F5F8FB;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Offset for sticky header so section titles remain fully visible */
+  section[id],
+  div[id],
+  footer[id] {
+    scroll-margin-top: 84px;
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+    background-color: #031B35;
+    color: #FFFFFF;
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+}
+
+/* Custom utility classes matching brand specifications */
+.font-heading {
+  font-family: 'Montserrat', sans-serif;
+}
+
+.font-body {
+  font-family: 'Poppins', sans-serif;
+}
+
+/* 5-Column x 2-Row Engineering Capability Matrix for Desktop */
+@media (min-width: 1024px) {
+  .expertise-5-col-grid {
+    display: grid !important;
+    grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (min-width: 640px) and (max-width: 1023px) {
+  .expertise-5-col-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 639px) {
+  .expertise-5-col-grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Custom Leaflet Map Styling */
+.leaflet-container {
+  width: 100% !important;
+  height: 100% !important;
+  font-family: inherit;
+  z-index: 1;
+}
+
+.leaflet-container img {
+  max-width: none !important;
+  max-height: none !important;
+}
+
+.leaflet-tile-pane {
+  opacity: 0.95;
+}
+
+.thermogen-map-marker-container {
+  background: transparent !important;
+  border: none !important;
+}
+
+.leaflet-popup-content-wrapper {
+  background: #FFFFFF !important;
+  color: #082E57 !important;
+  border-radius: 14px !important;
+  border: 1px solid #DCE7F2 !important;
+  box-shadow: 0 4px 20px rgba(8, 46, 87, 0.12) !important;
+  padding: 4px 6px !important;
+}
+
+.leaflet-popup-tip {
+  background: #FFFFFF !important;
+  border: 1px solid #DCE7F2 !important;
+  box-shadow: none !important;
+}

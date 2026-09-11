@@ -6,6 +6,7 @@ import {defineConfig} from 'vite';
 
 export default defineConfig(() => {
   return {
+    base: '/thermogen-projects-website/',
     plugins: [
       react(),
       tailwindcss(),
@@ -126,3 +127,4 @@ export default defineConfig(() => {
     },
   };
 });
+

@@ -11,6 +11,26 @@ export default defineConfig(() => {
       react(),
       tailwindcss(),
       {
+        name: 'copy-images-to-dist',
+        closeBundle() {
+          const srcDir = path.join(__dirname, 'Images');
+          const destDir = path.join(__dirname, 'dist', 'Images');
+          if (fs.existsSync(srcDir)) {
+            if (!fs.existsSync(destDir)) {
+              fs.mkdirSync(destDir, { recursive: true });
+            }
+            const files = fs.readdirSync(srcDir);
+            for (const file of files) {
+              const srcFile = path.join(srcDir, file);
+              const destFile = path.join(destDir, file);
+              if (fs.statSync(srcFile).isFile()) {
+                fs.copyFileSync(srcFile, destFile);
+              }
+            }
+          }
+        },
+      },
+      {
         name: 'serve-root-images',
         configureServer(server) {
           server.middlewares.use((req, res, next) => {
@@ -42,6 +62,9 @@ export default defineConfig(() => {
               decodedUrl = decodeURIComponent(rawUrl).split('?')[0];
             } catch {
               decodedUrl = rawUrl.split('?')[0];
+            }
+            if (decodedUrl.startsWith('/thermogen-projects-website')) {
+              decodedUrl = decodedUrl.replace('/thermogen-projects-website', '') || '/';
             }
             if (/\.(png|jpe?g|webp|svg|gif)$/i.test(decodedUrl)) {
               const filename = path.basename(decodedUrl);
@@ -127,4 +150,3 @@ export default defineConfig(() => {
     },
   };
 });
-

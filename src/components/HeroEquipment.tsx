@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { motion, useReducedMotion } from 'motion/react';
+import { getAssetUrl } from '../utils/assetPath';
 import { animationTokens } from '../tokens';
 
 export const HeroEquipment: React.FC = () => {
@@ -55,7 +56,7 @@ export const HeroEquipment: React.FC = () => {
         {!imgLoadFailed && (
           <div className="relative w-full overflow-hidden rounded-lg">
             <img
-              src="/PRS IMAGE.png"
+              src={getAssetUrl('PRS IMAGE.png')}
               alt="Industrial Gas Pressure Regulating Skid (PRS Skid) with stainless steel piping, precision regulators, valves, and skid frame engineered by Thermogen Projects"
               className={`w-full h-auto object-contain transition-opacity duration-500 drop-shadow-[0_20px_40px_rgba(1,14,30,0.85)] ${
                 imgLoaded ? 'opacity-100' : 'opacity-0 absolute inset-0'

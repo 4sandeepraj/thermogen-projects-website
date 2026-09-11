@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { motion, useReducedMotion } from 'motion/react';
+import { getAssetUrl } from '../utils/assetPath';
 import {
   Flame,
   FileSearch,
@@ -105,16 +106,16 @@ export const WhoWeAreSection: React.FC = () => {
               {!imgLoadError ? (
                 <div className="relative w-full h-full min-h-[380px] sm:min-h-[440px] lg:min-h-[470px] xl:min-h-[490px] overflow-hidden">
                   <img
-                    src="/Images/ChatGPT%20Image%20Sep%209,%202026,%2002_24_24%20PM.png"
+                    src={getAssetUrl('Images/ChatGPT Image Sep 9, 2026, 02_24_24 PM.png')}
                     alt="Thermogen combustion engineering solutions and industrial gas facilities"
                     className="w-full h-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-[1.02]"
                     referrerPolicy="no-referrer"
                     onError={(e) => {
                       const target = e.currentTarget;
                       if (!target.src.includes('who-we-are-chatgpt')) {
-                        target.src = '/Images/who-we-are-chatgpt.png';
+                        target.src = getAssetUrl('Images/who-we-are-chatgpt.png');
                       } else if (!target.src.includes('who-we-are-engineers')) {
-                        target.src = '/Images/who-we-are-engineers.jpg';
+                        target.src = getAssetUrl('Images/who-we-are-engineers.jpg');
                       } else {
                         setImgLoadError(true);
                       }

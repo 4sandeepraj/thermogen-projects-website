@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { motion, useReducedMotion } from 'motion/react';
+import { getAssetUrl } from '../utils/assetPath';
 import {
   Award,
   ChevronDown,
@@ -39,14 +40,16 @@ const teamMembers: TeamMember[] = [
     badge: 'DIRECTOR',
     isDirector: true,
     altText: 'Mr. Kuldeep Raj – Director, Thermogen Projects Private Limited',
-    photoUrl: '/kuldeep%20Raj.png',
+    photoUrl: 'kuldeep Raj.png',
     defaultFileName: 'kuldeep Raj.png',
     photoCandidateUrls: [
-      '/kuldeep%20Raj.png',
-      '/kuldeep-raj.png',
-      '/kuldeep Raj.png',
-      '/KULDEEP%20RAJ.png',
-      '/KULDEEP RAJ.png',
+      'kuldeep Raj.png',
+      'kuldeep%20Raj.png',
+      'kuldeep-raj.png',
+      'KULDEEP%20RAJ.png',
+      'KULDEEP RAJ.png',
+      'Images/kuldeep Raj.png',
+      'Images/kuldeep-raj.png',
     ],
     objectPosition: 'center 15%',
     profile:
@@ -68,15 +71,17 @@ const teamMembers: TeamMember[] = [
     name: 'Mr. H. N. Roy',
     designation: 'Senior Technical Advisor',
     altText: 'Mr. H. N. Roy – Senior Technical Advisor, Thermogen Projects Private Limited',
-    photoUrl: '/H%20N%20ROY.png',
+    photoUrl: 'H N ROY.png',
     defaultFileName: 'H N ROY.png',
     photoCandidateUrls: [
-      '/H%20N%20ROY.png',
-      '/h-n-roy.png',
-      '/H N ROY.png',
-      '/h%20n%20roy.png',
-      '/H-N-ROY.png',
-      '/HN%20ROY.png',
+      'H N ROY.png',
+      'H%20N%20ROY.png',
+      'h-n-roy.png',
+      'h%20n%20roy.png',
+      'H-N-ROY.png',
+      'HN%20ROY.png',
+      'Images/H N ROY.png',
+      'Images/h-n-roy.png',
     ],
     objectPosition: 'center 15%',
     profile:
@@ -95,14 +100,16 @@ const teamMembers: TeamMember[] = [
     name: 'Mr. Sandeep Raj',
     designation: 'Head – Logistics & Supply Chain',
     altText: 'Mr. Sandeep Raj – Head – Logistics & Supply Chain, Thermogen Projects Private Limited',
-    photoUrl: '/SANDEEP%20RAJ.png',
+    photoUrl: 'SANDEEP RAJ.png',
     defaultFileName: 'SANDEEP RAJ.png',
     photoCandidateUrls: [
-      '/SANDEEP%20RAJ.png',
-      '/sandeep-raj.png',
-      '/SANDEEP RAJ.png',
-      '/sandeep%20raj.png',
-      '/SANDEEP-RAJ.png',
+      'SANDEEP RAJ.png',
+      'SANDEEP%20RAJ.png',
+      'sandeep-raj.png',
+      'sandeep%20raj.png',
+      'SANDEEP-RAJ.png',
+      'Images/SANDEEP RAJ.png',
+      'Images/sandeep-raj.png',
     ],
     objectPosition: 'center 15%',
     profile:
@@ -121,14 +128,16 @@ const teamMembers: TeamMember[] = [
     name: 'Mr. Raj Singh',
     designation: 'Head – Sales & Marketing',
     altText: 'Mr. Raj Singh – Head – Sales & Marketing, Thermogen Projects Private Limited',
-    photoUrl: '/RAJ%20SINGH.png',
+    photoUrl: 'RAJ SINGH.png',
     defaultFileName: 'RAJ SINGH.png',
     photoCandidateUrls: [
-      '/RAJ%20SINGH.png',
-      '/raj-singh.png',
-      '/RAJ SINGH.png',
-      '/raj%20singh.png',
-      '/RAJ-SINGH.png',
+      'RAJ SINGH.png',
+      'RAJ%20SINGH.png',
+      'raj-singh.png',
+      'raj%20singh.png',
+      'RAJ-SINGH.png',
+      'Images/RAJ SINGH.png',
+      'Images/raj-singh.png',
     ],
     objectPosition: 'center 12%',
     profile:
@@ -147,14 +156,16 @@ const teamMembers: TeamMember[] = [
     name: 'Ms. Kiran Singh',
     designation: 'Head – Quality Assurance & Testing',
     altText: 'Ms. Kiran Singh – Head – Quality Assurance & Testing, Thermogen Projects Private Limited',
-    photoUrl: '/KIRAN%20SINGH.png',
+    photoUrl: 'KIRAN SINGH.png',
     defaultFileName: 'KIRAN SINGH.png',
     photoCandidateUrls: [
-      '/KIRAN%20SINGH.png',
-      '/kiran-singh.png',
-      '/KIRAN SINGH.png',
-      '/kiran%20singh.png',
-      '/KIRAN-SINGH.png',
+      'KIRAN SINGH.png',
+      'KIRAN%20SINGH.png',
+      'kiran-singh.png',
+      'kiran%20singh.png',
+      'KIRAN-SINGH.png',
+      'Images/KIRAN SINGH.png',
+      'Images/kiran-singh.png',
     ],
     objectPosition: 'center 15%',
     profile:
@@ -331,18 +342,19 @@ const PortraitPhoto: React.FC<PortraitPhotoProps> = ({ member, isLarge = false }
     }
   };
 
-  const candidateUrls =
+  const candidateUrls = (
     member.photoCandidateUrls && member.photoCandidateUrls.length > 0
       ? member.photoCandidateUrls
       : member.photoUrl
       ? [member.photoUrl]
-      : [];
+      : []
+  ).map(getAssetUrl);
 
   const rawUrl =
     customPhoto ||
     (useFallbackSvg
       ? getMemberFallbackSvg(member)
-      : candidateUrls[candidateIndex] || member.photoUrl || '');
+      : candidateUrls[candidateIndex] || (member.photoUrl ? getAssetUrl(member.photoUrl) : ''));
 
   const currentUrl =
     rawUrl.startsWith('data:')

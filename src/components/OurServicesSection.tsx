@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion, useReducedMotion } from 'motion/react';
+import { getAssetUrl, getAssetCandidates } from '../utils/assetPath';
 import {
   Network,
   Gauge,
@@ -170,7 +171,7 @@ export const OurServicesSection: React.FC = () => {
                   {/* Visual Area at Top: 195px height with subtle Deep Navy overlay */}
                   <div className="relative w-full h-[195px] sm:h-[205px] overflow-hidden bg-[#041E3A]">
                     <img
-                      src={service.image}
+                      src={getAssetUrl(service.image)}
                       alt={service.title}
                       className="w-full h-full object-cover object-center transition-transform duration-350 ease-out group-hover:scale-[1.02]"
                       loading="lazy"
@@ -178,15 +179,11 @@ export const OurServicesSection: React.FC = () => {
                       referrerPolicy="no-referrer"
                       onError={(e) => {
                         const target = e.currentTarget;
-                        const srcWithSlash = service.image.startsWith('/')
-                          ? service.image
-                          : `/${service.image}`;
-                        if (!target.dataset.triedSlash) {
-                          target.dataset.triedSlash = 'true';
-                          target.src = srcWithSlash;
-                        } else if (!target.dataset.triedEncoded) {
-                          target.dataset.triedEncoded = 'true';
-                          target.src = encodeURI(srcWithSlash);
+                        const candidates = getAssetCandidates(service.image);
+                        const currentAttempt = parseInt(target.dataset.attempt || '0', 10);
+                        if (currentAttempt < candidates.length) {
+                          target.dataset.attempt = String(currentAttempt + 1);
+                          target.src = candidates[currentAttempt];
                         } else {
                           target.onerror = null;
                           target.src = service.fallbackSvg;

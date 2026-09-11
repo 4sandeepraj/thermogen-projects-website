@@ -222,14 +222,24 @@ async function startServer() {
   const imagesDir = path.join(process.cwd(), 'Images');
   if (fs.existsSync(imagesDir)) {
     app.use('/Images', express.static(imagesDir));
+    app.use('/thermogen-projects-website/Images', express.static(imagesDir));
   }
 
   const publicDir = path.join(process.cwd(), 'public');
   if (fs.existsSync(publicDir)) {
     app.use(express.static(publicDir));
+    app.use('/thermogen-projects-website', express.static(publicDir));
   }
 
   if (process.env.NODE_ENV !== 'production') {
+    // Redirect root to base path in dev mode if needed
+    app.get('/', (_req, res, next) => {
+      if (_req.headers.accept?.includes('text/html')) {
+        return res.redirect('/thermogen-projects-website/');
+      }
+      next();
+    });
+
     // Development mode: Vite middleware
     const vite = await createViteServer({
       server: { middlewareMode: true },
@@ -240,6 +250,7 @@ async function startServer() {
     // Production mode: Built assets
     const distPath = path.join(process.cwd(), 'dist');
     app.use(express.static(distPath));
+    app.use('/thermogen-projects-website', express.static(distPath));
     app.get('*', (_req: Request, res: Response) => {
       res.sendFile(path.join(distPath, 'index.html'));
     });

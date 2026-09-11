@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
+import { getAssetUrl } from '../utils/assetPath';
 import {
   ChevronLeft,
   ChevronRight,
@@ -33,10 +34,10 @@ export const PROJECTS_DATA: ProjectItem[] = [
       'Turnkey engineering and development of a 2000 SCMD Coal Bed Methane (CBM) gas dehydration unit and gas compressor facility engineered for conditioning, moisture removal, and high-pressure transmission.',
     defaultFileName: 'DEHYDRATION UNIT.png',
     photoCandidateUrls: [
-      '/Images/DEHYDRATION UNIT.png',
-      '/Images/DEHYDRATION%20UNIT.png',
-      '/DEHYDRATION UNIT.png',
-      '/DEHYDRATION%20UNIT.png',
+      'Images/DEHYDRATION UNIT.png',
+      'Images/DEHYDRATION%20UNIT.png',
+      'DEHYDRATION UNIT.png',
+      'DEHYDRATION%20UNIT.png',
     ],
   },
   {
@@ -50,10 +51,10 @@ export const PROJECTS_DATA: ProjectItem[] = [
     defaultFileName: 'TPPL_METALSA_DECANTING FACILITY.png',
     logoComponent: MetalsaLogo,
     photoCandidateUrls: [
-      '/Images/TPPL_METALSA_DECANTING FACILITY.png',
-      '/Images/TPPL_METALSA_DECANTING%20FACILITY.png',
-      '/TPPL_METALSA_DECANTING FACILITY.png',
-      '/TPPL_METALSA_DECANTING%20FACILITY.png',
+      'Images/TPPL_METALSA_DECANTING FACILITY.png',
+      'Images/TPPL_METALSA_DECANTING%20FACILITY.png',
+      'TPPL_METALSA_DECANTING FACILITY.png',
+      'TPPL_METALSA_DECANTING%20FACILITY.png',
     ],
   },
   {
@@ -67,10 +68,10 @@ export const PROJECTS_DATA: ProjectItem[] = [
     defaultFileName: 'TPPL_PALRIWAL_MRS SUPPLY.png',
     logoComponent: PaliralLogo,
     photoCandidateUrls: [
-      '/Images/TPPL_PALRIWAL_MRS SUPPLY.png',
-      '/Images/TPPL_PALRIWAL_MRS%20SUPPLY.png',
-      '/TPPL_PALRIWAL_MRS SUPPLY.png',
-      '/TPPL_PALRIWAL_MRS%20SUPPLY.png',
+      'Images/TPPL_PALRIWAL_MRS SUPPLY.png',
+      'Images/TPPL_PALRIWAL_MRS%20SUPPLY.png',
+      'TPPL_PALRIWAL_MRS SUPPLY.png',
+      'TPPL_PALRIWAL_MRS%20SUPPLY.png',
     ],
   },
   {
@@ -83,10 +84,10 @@ export const PROJECTS_DATA: ProjectItem[] = [
       'Complete engineering, piping manifolds, priority panel sequencing, high-pressure gas compression, and multi-bay mobile cascade filling station installation.',
     defaultFileName: 'TPPL_CNG_MOTHER STATION.png',
     photoCandidateUrls: [
-      '/Images/TPPL_CNG_MOTHER STATION.png',
-      '/Images/TPPL_CNG_MOTHER%20STATION.png',
-      '/TPPL_CNG_MOTHER STATION.png',
-      '/TPPL_CNG_MOTHER%20STATION.png',
+      'Images/TPPL_CNG_MOTHER STATION.png',
+      'Images/TPPL_CNG_MOTHER%20STATION.png',
+      'TPPL_CNG_MOTHER STATION.png',
+      'TPPL_CNG_MOTHER%20STATION.png',
     ],
   },
   {
@@ -99,14 +100,14 @@ export const PROJECTS_DATA: ProjectItem[] = [
       'Turnkey engineering, fabrication, safety relief, active-monitor regulation lines, and commissioning of dual-stream industrial gas pressure regulating skids (PRS) and precision regulator assemblies.',
     defaultFileName: 'TPPL_REGULATORS (2).png',
     photoCandidateUrls: [
-      '/Images/TPPL_REGULATORS (2).png',
-      '/Images/TPPL_REGULATORS%20(2).png',
-      '/Images/TPPL_REGULATORS%20%282%29.png',
-      '/Images/TPPL_REGULATORS.png',
-      '/TPPL_REGULATORS (2).png',
-      '/TPPL_REGULATORS%20(2).png',
-      '/TPPL_REGULATORS%20%282%29.png',
-      '/TPPL_REGULATORS.png',
+      'Images/TPPL_REGULATORS (2).png',
+      'Images/TPPL_REGULATORS%20(2).png',
+      'Images/TPPL_REGULATORS%20%282%29.png',
+      'Images/TPPL_REGULATORS.png',
+      'TPPL_REGULATORS (2).png',
+      'TPPL_REGULATORS%20(2).png',
+      'TPPL_REGULATORS%20%282%29.png',
+      'TPPL_REGULATORS.png',
     ],
   },
 ];
@@ -347,10 +348,11 @@ const ProjectSlideViewer: React.FC<ProjectSlideViewerProps> = ({
     }
   };
 
-  const candidateUrls =
+  const candidateUrls = (
     project.photoCandidateUrls && project.photoCandidateUrls.length > 0
       ? project.photoCandidateUrls
-      : [project.defaultFileName];
+      : [project.defaultFileName]
+  ).map(getAssetUrl);
 
   const rawUrl =
     customSlide ||
@@ -608,7 +610,7 @@ export const OurProjectsSection: React.FC = () => {
               const offscreenUrl =
                 (typeof window !== 'undefined' &&
                   localStorage.getItem('tppl_project_slide_' + proj.id)) ||
-                proj.photoCandidateUrls[0] ||
+                (proj.photoCandidateUrls[0] && getAssetUrl(proj.photoCandidateUrls[0])) ||
                 getProjectFallbackSlideSvg(proj);
               return (
                 <img
@@ -815,7 +817,7 @@ export const OurProjectsSection: React.FC = () => {
                     (typeof window !== 'undefined' &&
                       localStorage.getItem('tppl_project_slide_' + currentProject.id)?.startsWith('data:image/') &&
                       localStorage.getItem('tppl_project_slide_' + currentProject.id)) ||
-                    encodeURI(decodeURI(currentProject.photoCandidateUrls[0])) ||
+                    (currentProject.photoCandidateUrls[0] && getAssetUrl(currentProject.photoCandidateUrls[0])) ||
                     getProjectFallbackSlideSvg(currentProject)
                   }
                   alt={`Full slide: ${currentProject.title}`}

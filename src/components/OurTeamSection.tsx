@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { motion, useReducedMotion } from 'motion/react';
 import { getAssetUrl } from '../utils/assetPath';
 import {
@@ -10,8 +10,6 @@ import {
   CheckCircle2,
   User,
   Quote,
-  Camera,
-  Upload,
 } from 'lucide-react';
 
 export interface TeamMember {
@@ -40,16 +38,13 @@ const teamMembers: TeamMember[] = [
     badge: 'DIRECTOR',
     isDirector: true,
     altText: 'Mr. Kuldeep Raj – Director, Thermogen Projects Private Limited',
-    photoUrl: 'kuldeep Raj.png',
+    photoUrl: 'Images/kuldeep Raj.png',
     defaultFileName: 'kuldeep Raj.png',
     photoCandidateUrls: [
-      'kuldeep Raj.png',
-      'kuldeep%20Raj.png',
-      'kuldeep-raj.png',
-      'KULDEEP%20RAJ.png',
-      'KULDEEP RAJ.png',
       'Images/kuldeep Raj.png',
       'Images/kuldeep-raj.png',
+      'kuldeep Raj.png',
+      'kuldeep-raj.png',
     ],
     objectPosition: 'center 15%',
     profile:
@@ -71,17 +66,13 @@ const teamMembers: TeamMember[] = [
     name: 'Mr. H. N. Roy',
     designation: 'Senior Technical Advisor',
     altText: 'Mr. H. N. Roy – Senior Technical Advisor, Thermogen Projects Private Limited',
-    photoUrl: 'H N ROY.png',
+    photoUrl: 'Images/H N ROY.png',
     defaultFileName: 'H N ROY.png',
     photoCandidateUrls: [
-      'H N ROY.png',
-      'H%20N%20ROY.png',
-      'h-n-roy.png',
-      'h%20n%20roy.png',
-      'H-N-ROY.png',
-      'HN%20ROY.png',
       'Images/H N ROY.png',
       'Images/h-n-roy.png',
+      'H N ROY.png',
+      'h-n-roy.png',
     ],
     objectPosition: 'center 15%',
     profile:
@@ -100,16 +91,13 @@ const teamMembers: TeamMember[] = [
     name: 'Mr. Sandeep Raj',
     designation: 'Head – Logistics & Supply Chain',
     altText: 'Mr. Sandeep Raj – Head – Logistics & Supply Chain, Thermogen Projects Private Limited',
-    photoUrl: 'SANDEEP RAJ.png',
+    photoUrl: 'Images/SANDEEP RAJ.png',
     defaultFileName: 'SANDEEP RAJ.png',
     photoCandidateUrls: [
-      'SANDEEP RAJ.png',
-      'SANDEEP%20RAJ.png',
-      'sandeep-raj.png',
-      'sandeep%20raj.png',
-      'SANDEEP-RAJ.png',
       'Images/SANDEEP RAJ.png',
       'Images/sandeep-raj.png',
+      'SANDEEP RAJ.png',
+      'sandeep-raj.png',
     ],
     objectPosition: 'center 15%',
     profile:
@@ -128,16 +116,13 @@ const teamMembers: TeamMember[] = [
     name: 'Mr. Raj Singh',
     designation: 'Head – Sales & Marketing',
     altText: 'Mr. Raj Singh – Head – Sales & Marketing, Thermogen Projects Private Limited',
-    photoUrl: 'RAJ SINGH.png',
+    photoUrl: 'Images/RAJ SINGH.png',
     defaultFileName: 'RAJ SINGH.png',
     photoCandidateUrls: [
-      'RAJ SINGH.png',
-      'RAJ%20SINGH.png',
-      'raj-singh.png',
-      'raj%20singh.png',
-      'RAJ-SINGH.png',
       'Images/RAJ SINGH.png',
       'Images/raj-singh.png',
+      'RAJ SINGH.png',
+      'raj-singh.png',
     ],
     objectPosition: 'center 12%',
     profile:
@@ -156,16 +141,13 @@ const teamMembers: TeamMember[] = [
     name: 'Ms. Kiran Singh',
     designation: 'Head – Quality Assurance & Testing',
     altText: 'Ms. Kiran Singh – Head – Quality Assurance & Testing, Thermogen Projects Private Limited',
-    photoUrl: 'KIRAN SINGH.png',
+    photoUrl: 'Images/KIRAN SINGH.png',
     defaultFileName: 'KIRAN SINGH.png',
     photoCandidateUrls: [
-      'KIRAN SINGH.png',
-      'KIRAN%20SINGH.png',
-      'kiran-singh.png',
-      'kiran%20singh.png',
-      'KIRAN-SINGH.png',
       'Images/KIRAN SINGH.png',
       'Images/kiran-singh.png',
+      'KIRAN SINGH.png',
+      'kiran-singh.png',
     ],
     objectPosition: 'center 15%',
     profile:
@@ -299,92 +281,31 @@ interface PortraitPhotoProps {
 const PortraitPhoto: React.FC<PortraitPhotoProps> = ({ member, isLarge = false }) => {
   const [candidateIndex, setCandidateIndex] = useState(0);
   const [useFallbackSvg, setUseFallbackSvg] = useState(false);
-  const [isDragging, setIsDragging] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const [customPhoto, setCustomPhoto] = useState<string | null>(() => {
-    if (typeof window !== 'undefined') {
-      try {
-        return localStorage.getItem('tppl_member_photo_' + member.id);
-      } catch {
-        return null;
-      }
-    }
-    return null;
-  });
+  // Compute unique, properly base-prefixed and URL-encoded candidate paths
+  const candidateUrls = Array.from(
+    new Set(
+      (member.photoCandidateUrls && member.photoCandidateUrls.length > 0
+        ? member.photoCandidateUrls
+        : member.photoUrl
+        ? [member.photoUrl]
+        : []
+      )
+        .map(getAssetUrl)
+        .filter(Boolean)
+    )
+  );
 
-  const handleFiles = (files: FileList | null) => {
-    if (!files || files.length === 0) return;
-    const file = files[0];
-    if (file.type.startsWith('image/')) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const result = e.target?.result as string;
-        if (result) {
-          setCustomPhoto(result);
-          setUseFallbackSvg(false);
-          try {
-            localStorage.setItem('tppl_member_photo_' + member.id, result);
-          } catch {
-            // ignore
-          }
-          fetch('/api/upload-photo', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              filename: file.name || member.defaultFileName || `${member.name}.png`,
-              dataUrl: result,
-            }),
-          }).catch(() => {});
-        }
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const candidateUrls = (
-    member.photoCandidateUrls && member.photoCandidateUrls.length > 0
-      ? member.photoCandidateUrls
-      : member.photoUrl
-      ? [member.photoUrl]
-      : []
-  ).map(getAssetUrl);
-
-  const rawUrl =
-    customPhoto ||
-    (useFallbackSvg
-      ? getMemberFallbackSvg(member)
-      : candidateUrls[candidateIndex] || (member.photoUrl ? getAssetUrl(member.photoUrl) : ''));
-
-  const currentUrl =
-    rawUrl.startsWith('data:')
-      ? rawUrl
-      : encodeURI(decodeURI(rawUrl));
+  const currentUrl = useFallbackSvg
+    ? getMemberFallbackSvg(member)
+    : candidateUrls[candidateIndex] || (member.photoUrl ? getAssetUrl(member.photoUrl) : '');
 
   return (
     <div
       className={`group/photo relative w-full h-full overflow-hidden bg-[#041E3A] ${
         isLarge ? 'rounded-[18px]' : 'rounded-[14px]'
-      } ${isDragging ? 'ring-2 ring-[#FF7900]' : ''}`}
-      onDragOver={(e) => {
-        e.preventDefault();
-        setIsDragging(true);
-      }}
-      onDragLeave={() => setIsDragging(false)}
-      onDrop={(e) => {
-        e.preventDefault();
-        setIsDragging(false);
-        handleFiles(e.dataTransfer.files);
-      }}
+      }`}
     >
-      <input
-        type="file"
-        ref={fileInputRef}
-        className="hidden"
-        accept="image/*"
-        onChange={(e) => handleFiles(e.target.files)}
-      />
-
       <img
         src={currentUrl}
         alt={member.altText}
@@ -402,19 +323,6 @@ const PortraitPhoto: React.FC<PortraitPhotoProps> = ({ member, isLarge = false }
       />
       {/* Subtle executive inner border */}
       <div className="absolute inset-0 ring-1 ring-inset ring-black/10 pointer-events-none" />
-
-      {/* Upload button to easily pick/update member photograph or drag & drop directly */}
-      <button
-        type="button"
-        onClick={() => fileInputRef.current?.click()}
-        title={`Click to select photograph (${member.defaultFileName || member.name + '.png'}) or drag & drop directly`}
-        className={`absolute bottom-2.5 right-2.5 z-10 flex items-center gap-1.5 rounded-lg bg-black/70 backdrop-blur-md border border-white/20 text-white font-medium opacity-0 group-hover/photo:opacity-100 transition-opacity duration-200 hover:bg-[#1688E8] hover:border-[#1688E8] cursor-pointer shadow-lg ${
-          isLarge ? 'px-2.5 py-1.5 text-[11px]' : 'px-2 py-1 text-[10px]'
-        }`}
-      >
-        <Camera className={`${isLarge ? 'w-3.5 h-3.5' : 'w-3 h-3'} text-[#FF7900]`} />
-        <span>{isLarge ? 'Upload / Change Photo' : 'Upload Photo'}</span>
-      </button>
     </div>
   );
 };

@@ -18,10 +18,11 @@ export function getAssetUrl(path: string | undefined | null): string {
   }
 
   // Get configured Vite base URL (defaults to '/' or env fallback)
-  const metaEnv = typeof import.meta !== 'undefined'
-    ? (import.meta as unknown as { env?: { BASE_URL?: string } }).env
-    : undefined;
-  const rawBase = (metaEnv && metaEnv.BASE_URL) || '/';
+  const rawBase =
+    (typeof import.meta !== 'undefined' &&
+      import.meta.env &&
+      import.meta.env.BASE_URL) ||
+    '/';
   const base = rawBase.endsWith('/') ? rawBase : `${rawBase}/`;
 
   // Strip all leading slashes from the asset path
@@ -74,6 +75,11 @@ export function getAssetCandidates(path: string | undefined | null): string[] {
     const altCandidate = getAssetUrl(filenameOnly);
     if (!candidates.includes(altCandidate)) {
       candidates.push(altCandidate);
+    }
+  } else {
+    const imagesCandidate = getAssetUrl(`Images/${clean}`);
+    if (!candidates.includes(imagesCandidate)) {
+      candidates.push(imagesCandidate);
     }
   }
 

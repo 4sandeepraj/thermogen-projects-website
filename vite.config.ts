@@ -6,7 +6,7 @@ import {defineConfig} from 'vite';
 
 export default defineConfig(() => {
   return {
-    base: '/thermogen-projects-website/',
+    base: '/',
     plugins: [
       react(),
       tailwindcss(),
